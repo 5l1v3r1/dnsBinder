@@ -96,7 +96,12 @@ function RequeteDig {
 		fi
 	#VERSION.BIND	,ID.BIND,	HOSTNAME.BIND
 	else		
-		requete=$(dig -t txt -c chaos $type.BIND @$dnsServer 2>&1 |egrep -i "$type.BIND.*CH.*TXT"|sed "s/.*TXT//g"|sed 's/"//g' )
+		if [ "$type" = "ID" ];then
+			bind_type="SERVER"
+		else
+			bind_type="BIND"
+		fi
+		requete=$(dig -t txt -c chaos $type.$bind_type @$dnsServer 2>&1 |egrep -i "$type.$bind_type.*CH.*TXT"|sed "s/.*TXT//g"|sed 's/"//g' )
 		#si serveur introuvable
 		if [ ${#requete} -lt $taille_min_reponse_requete ];then
 			requete="Erreur: Aucune réponse/No response"
