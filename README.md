@@ -1,3 +1,6 @@
+[![License](https://img.shields.io/badge/license-GPLv2-green.svg)](https://github.com/dino213dz)
+![logo](https://avatars2.githubusercontent.com/u/34544107 "dnsBinder by dino213dz")
+
 # DESCRIPTION 
 Get the DNS server version using chaos class.
 In addition, it tries to get the hostname, id and authors list
@@ -20,3 +23,6 @@ In addition, it tries to get the hostname, id and authors list
 - Version: 0.9 Beta
 - Created: 06/08/2019
 - Updated: 06/08/2019
+
+## SCREENSHOTS:
+![logo](http://dino213dz.online.fr/img/screenshot/dnsBinder_0.9Beta_screenshot.jpg "dnsBinde.sh 0.9 Beta")

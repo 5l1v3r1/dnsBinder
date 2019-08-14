@@ -52,13 +52,21 @@ outputActivated='FALSE'
 # FUNCTIONS:
 ######################################################################
 function afficherAide {
-	echo -e "Syntaxe: \n$0 -d 'exemple.com' -o ./bind.txt"	
+	echo -e '- Syntaxe:
+   - dnsBinder.sh [-d|--domain|--domaine] dns_server [-o|--output|--sortie output_file]
+- Examples
+   - dnsBinder.sh -d "ns01.example.com"
+   - dnsBinder.sh --domain "ns01.example.com"
+   - dnsBinder.sh --domaine "ns01.example.com"
+   - dnsBinder.sh -d "ns01.example.com" -o dns_example_information.txt
+   - dnsBinder.sh -d "ns01.example.com" --output dns_example_information.txt
+   - dnsBinder.sh -d "ns01.example.com" --sortie dns_example_information.txt'	
 	}
 function RequeteNslookup {
 	taille_min_reponse_requete=3
 	requete=$(nslookup -q=txt -class=CHAOS version.bind $dnsServer 2>&1|grep -i 'VERSION.BIND'|cut -d '"' -f 2)
 	if [ ${#requete} -lt $taille_min_reponse_requete ];then
-		requete="Erreur: Aucune réponse/No response"
+		requete="Error: Aucune réponse/No response"
 	fi
 	echo $requete		
 	}
@@ -73,9 +81,9 @@ function RequeteDig {
 		nb_lignes=$(cat $fichier_temp|wc -l)
 		#si reponse vide
 		if [ $nb_lignes -lt $taille_min_reponse_requete ];then
-			requete="Erreur: Aucune réponse/No response"
+			requete="Error: No response"
 		elif [[ $requete =~ "couldn't get address" ]];then
-			requete="Erreur: Url injoignable ou non résolue!"
+			requete="Error: DNS server not reachable"
 		#si reponse valable
 		else
 			while read -r ligne ;do
@@ -104,9 +112,9 @@ function RequeteDig {
 		requete=$(dig -t txt -c chaos $type.$bind_type @$dnsServer 2>&1 |egrep -i "$type.$bind_type.*CH.*TXT"|sed "s/.*TXT//g"|sed 's/"//g' )
 		#si serveur introuvable
 		if [ ${#requete} -lt $taille_min_reponse_requete ];then
-			requete="Erreur: Aucune réponse/No response"
+			requete="Error: No response"
 		elif [[ $requete =~ "couldn't get address" ]];then
-			requete="Erreur: Url injoignable ou non résolue!"
+			requete="Error: DNS server not reachable"
 		fi
 
 	fi
@@ -144,7 +152,7 @@ echo -e ${d213_styles["green"]}"\t\tVersion $d213_version\n"
 
 #verifs
 if [ ${#dnsServer} -eq 0 ];then
-	echo -e "Erreur:\nIl manque le serveur DNS: [--domain|-d] suivi de l'ip ou le nom de domaine du serveur DNS\n"
+	echo -e "Error:\nNeed DNS server name or ip: [--domain|-d]\n"
 	afficherAide
 	exit
 else
@@ -162,21 +170,21 @@ echo -e ""
 # VERSION.BIND
 echo -e ${d213_colors["yellow"]}"■ VERSION.BIND: "${d213_styles["reset"]}
 # NSLOOKUP
-echo -en ${d213_colors["yellow"]}" ├─■ NSLookUp: "${d213_styles["reset"]}
+#echo -en ${d213_colors["yellow"]}" ├─■ NSLOOKUP REQUEST: "${d213_styles["reset"]}
 #requete 
-requete_nslookup_ver=$(RequeteNslookup)
+#requete_nslookup_ver=$(RequeteNslookup)
 #afficher le resultat de la requete
-if [[ $requete_nslookup_ver =~ "Erreur:" ]];then
-	echo -e ${d213_colors["red"]}""$requete_nslookup_ver""${d213_styles["reset"]}
-else
-	echo -e ${d213_colors["green"]}""$requete_nslookup_ver""${d213_styles["reset"]}
-fi
+#if [[ $requete_nslookup_ver =~ "Error:" ]];then
+#	echo -e ${d213_colors["red"]}""$requete_nslookup_ver""${d213_styles["reset"]}
+#else
+#	echo -e ${d213_colors["green"]}""$requete_nslookup_ver""${d213_styles["reset"]}
+#fi
 # DIG
-echo -en ${d213_colors["yellow"]}" └─■ DIG: "${d213_styles["reset"]}
+echo -en ${d213_colors["yellow"]}" └─■ DIG REQUEST: "${d213_styles["reset"]}
 #requete 
 requete_dig_ver=$(RequeteDig "VERSION")
 #afficher le resultat de la requete
-if [[ $requete_dig_ver =~ "Erreur:" ]];then
+if [[ $requete_dig_ver =~ "Error:" ]];then
 	echo -e ${d213_colors["red"]}""$requete_dig_ver""${d213_styles["reset"]}
 else
 	echo -e ${d213_colors["green"]}""$requete_dig_ver""${d213_styles["reset"]}
@@ -186,11 +194,11 @@ echo -e ""
 # AUTHORS.BIND
 echo -e ${d213_colors["yellow"]}"■ AUTHORS.BIND: "${d213_styles["reset"]}
 # DIG
-echo -en ${d213_colors["yellow"]}" └─■ DIG: "${d213_styles["reset"]}
+echo -en ${d213_colors["yellow"]}" └─■ DIG REQUEST: "${d213_styles["reset"]}
 #requete 
 requete_dig_authors=$(RequeteDig "AUTHORS")
 #afficher le resultat de la requete
-if [[ $requete_dig_authors =~ "Erreur:" ]];then
+if [[ $requete_dig_authors =~ "Error:" ]];then
 	echo -e ${d213_colors["red"]}""$requete_dig_authors""${d213_styles["reset"]}
 else
 	echo -e ${d213_colors["green"]}""$requete_dig_authors""${d213_styles["reset"]}
@@ -200,11 +208,11 @@ echo -e ""
 # HOSTNAME.BIND
 echo -e ${d213_colors["yellow"]}"■ HOSTNAME.BIND: "${d213_styles["reset"]}
 # DIG
-echo -en ${d213_colors["yellow"]}" └─■ DIG: "${d213_styles["reset"]}
+echo -en ${d213_colors["yellow"]}" └─■ DIG REQUEST: "${d213_styles["reset"]}
 #requete 
 requete_dig_hostname=$(RequeteDig "HOSTNAME")
 #afficher le resultat de la requete
-if [[ $requete_dig_hostname =~ "Erreur:" ]];then
+if [[ $requete_dig_hostname =~ "Error:" ]];then
 	echo -e ${d213_colors["red"]}""$requete_dig_hostname""${d213_styles["reset"]}
 else
 	echo -e ${d213_colors["green"]}""$requete_dig_hostname""${d213_styles["reset"]}
@@ -212,13 +220,13 @@ fi
 ######################################################################
 echo -e ""
 # ID.BIND
-echo -e ${d213_colors["yellow"]}"■ ID.BIND: "${d213_styles["reset"]}
+echo -e ${d213_colors["yellow"]}"■ ID.SERVER: "${d213_styles["reset"]}
 # DIG
-echo -en ${d213_colors["yellow"]}" └─■ DIG: "${d213_styles["reset"]}
+echo -en ${d213_colors["yellow"]}" └─■ DIG REQUEST: "${d213_styles["reset"]}
 #requete 
 requete_dig_id=$(RequeteDig "ID")
 #afficher le resultat de la requete
-if [[ $requete_dig_id =~ "Erreur:" ]];then
+if [[ $requete_dig_id =~ "Error:" ]];then
 	echo -e ${d213_colors["red"]}""$requete_dig_id""${d213_styles["reset"]}
 else
 	echo -e ${d213_colors["green"]}""$requete_dig_id""${d213_styles["reset"]}
@@ -228,7 +236,7 @@ fi
 ######################################################################
 
 if [ "$outputActivated" = 'TRUE' ] ;then
-	requete_dig_authors_for_output="\n "${requete_dig_authors//'\'${d213_colors["yellow"]}/""}
+	requete_dig_authors_for_output=""${requete_dig_authors//'\'${d213_colors["yellow"]}/""}
 	requete_dig_authors_for_output=${requete_dig_authors_for_output//'\'${d213_colors["green"]}/""}
 	requete_dig_authors_for_output=${requete_dig_authors_for_output//'\'${d213_colors["cyan"]}/""}
 	requete_dig_authors_for_output=${requete_dig_authors_for_output//'■'/''}
@@ -241,14 +249,14 @@ if [ "$outputActivated" = 'TRUE' ] ;then
 	echo -e "SERVER: $dnsServer" > $outputFile
 	echo -e "DATE: "$(/bin/date "+%c")"" >> $outputFile
 	echo -e "VERSION BIND:" >> $outputFile
-	echo -e " - NSLOOKUP: $requete_nslookup_ver" >> $outputFile
-	echo -e " - DIG: $requete_dig_ver" >> $outputFile
+	#echo -e " - NSLOOKUP: $requete_nslookup_ver" >> $outputFile
+	echo -e " - DIG REQUEST: $requete_dig_ver" >> $outputFile
 	echo -e "AUTHORS BIND:" >> $outputFile
-	echo -e " - DIG: $requete_dig_authors_for_output" >> $outputFile
+	echo -e " - DIG REQUEST: $requete_dig_authors_for_output" >> $outputFile
 	echo -e "HOSTNAME BIND:" >> $outputFile
-	echo -e " - DIG: $requete_dig_hostname" >> $outputFile
+	echo -e " - DIG REQUEST: $requete_dig_hostname" >> $outputFile
 	echo -e "ID BIND:" >> $outputFile
-	echo -e " - DIG: $requete_dig_id" >> $outputFile
+	echo -e " - DIG REQUEST: $requete_dig_id" >> $outputFile
 	
 fi
 
