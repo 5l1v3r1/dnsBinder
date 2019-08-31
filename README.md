@@ -20,9 +20,9 @@ In addition, it tries to get the hostname, id and authors list
 - Author: CHORFA Alla-eddine
 - Email: h4ckr213dz@gmail.com
 - Web: github.com/dino213dz
-- Version: 0.9 Beta
+- Version: 1.0
 - Created: 06/08/2019
-- Updated: 06/08/2019
+- Updated: 30/08/2019
 
 ## SCREENSHOTS:
-![logo](http://dino213dz.online.fr/img/screenshot/dnsBinder_0.9Beta_screenshot.jpg "dnsBinde.sh 0.9 Beta")
+![logo](http://dino213dz.online.fr/img/screenshot/dnsBinder_0.9Beta_screenshot.jpg "dnsBinde.sh 1.0")
