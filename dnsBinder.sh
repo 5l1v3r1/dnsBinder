@@ -55,11 +55,11 @@ portDns="$portParDefaut"
 ######################################################################
 function afficherAide {
 	echo -e '- Syntaxe:
-   - dnsBinder.sh [-d|--domain|--domaine] dns_server [-o|--output|--sortie output_file]
+   - dnsBinder.sh [-d|--domain|--domaine] dns_server [-p|--port port_number] [-o|--output|--sortie output_file] 
 - Examples
    - dnsBinder.sh -d "ns01.example.com"
    - dnsBinder.sh --domain "ns01.example.com"
-   - dnsBinder.sh --domaine "ns01.example.com"
+   - dnsBinder.sh --domaine "ns01.example.com --port 53"
    - dnsBinder.sh -d "ns01.example.com" -o dns_example_information.txt
    - dnsBinder.sh -d "ns01.example.com" --output dns_example_information.txt
    - dnsBinder.sh -d "ns01.example.com" --sortie dns_example_information.txt'	
